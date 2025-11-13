@@ -1,19 +1,16 @@
-const somethingCb = (a, b, c) => a * b * c
+const carriedSum = (arg) => {
+    const inner = (nextArg, sum = 0) => {
+        sum += nextArg ?? 0;
 
-const makeCarry = (cb) => {
-    const carried = (...args) => {
-        if (args.length >= cb.length) { // база
-            return cb(...args)
-        } else {
-            //нужно создать доп функцию (чтобы добавились еще скобки) ()() и передать туда все что насобирали с
-            // предыдущих шагов
-            return (...args2) => carried(...args, ...args2)
+        return (smth) => {
+            // если аргумента не было передано
+            if (smth === undefined) return sum;
+
+            return inner(smth, sum)
         }
     }
-    return carried
-}
 
-const curriedCb = makeCarry(somethingCb)
-// в данном примере мы можем карировать callback, написанный выше,
-// при этом результат будет верным на разном количестве аргументов в callback-е
-console.log(curriedCb(1)(2)(3) )
+    return inner(arg) // первый аргумент
+}
+const curriedFn = carriedSum(1)(2)
+console.log(curriedFn())
